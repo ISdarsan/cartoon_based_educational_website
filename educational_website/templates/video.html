@@ -1,198 +1,65 @@
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Playback</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        body {
-            background: var(--body-color);
-            font-family: var(--body-font);
-            text-align: center;
-            padding: 50px;
-            margin: 0;
-        }
-
-        .navbar {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .navbar img {
-            width: 60px;
-            height: auto;
-            margin-right: 10px;
-        }
-
-        .navbar h2 {
-            color: var(--title-color);
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .account-menu {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-        }
-
-        .account-menu button {
-            background: var(--first-color);
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            position: relative;
-        }
-
-        .account-menu button:hover {
-            background: var(--first-color-alt);
-            transform: scale(1.05);
-        }
-
-        .menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            background: var(--container-color);
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-top: 50px;
-            width: auto;
-            min-width: 150px; /* Ensures minimum width */
-        }
-
-        .menu p {
-            margin: 10px 0px;
-        }
-
-        /* Show menu on hover */
-        .account-menu:hover .menu {
-            display: block;
-        }
-
-        .video-container {
-            margin: 50px auto;
-            max-width: 800px;
-            background: var(--container-color);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        video {
-            width: 100%;
-            border-radius: 15px;
-        }
-
-        .buttons {
-            margin-top: 20px;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 15px 25px;
-            background: var(--first-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background 0.3s, transform 0.2s;
-            margin: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .button:hover {
-            background: var(--first-color-alt);
-            transform: scale(1.1);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .navbar h2 {
-                font-size: 1.5rem;
-            }
-
-            .video-container {
-                padding: 15px;
-                max-width: 100%;
-            }
-
-            .button {
-                padding: 12px 20px;
-            }
-
-            .account-menu button {
-                font-size: 0.9rem;
-            }
-        }
+        body { background: var(--body-color); font-family: var(--body-font); text-align: center; padding: 50px; margin: 0; }
+        .navbar { position: absolute; top: 20px; left: 20px; display: flex; align-items: center; z-index: 1000; }
+        .navbar img { width: 60px; height: auto; margin-right: 10px; }
+        .navbar h2 { color: var(--title-color); font-size: 1.8rem; font-weight: bold; }
+        .account-menu { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; }
+        .account-menu button { background: var(--first-color); color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; transition: background 0.3s, transform 0.2s; position: relative; }
+        .account-menu button:hover { background: var(--first-color-alt); transform: scale(1.05); }
+        .menu { display: none; position: absolute; right: 0; background: var(--container-color); padding: 10px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 50px; width: auto; min-width: 150px; }
+        .menu p { margin: 10px 0px; }
+        .account-menu:hover .menu { display: block; }
+        .video-container { margin: 50px auto; max-width: 800px; background: var(--container-color); padding: 20px; border-radius: 15px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); animation: fadeIn 1s ease-in-out; }
+        video { width: 100%; border-radius: 15px; }
+        .buttons { margin-top: 20px; }
+        .button { display: inline-block; padding: 15px 25px; background: var(--first-color); color: white; text-decoration: none; border-radius: 8px; transition: background 0.3s, transform 0.2s; margin: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); }
+        .button:hover { background: var(--first-color-alt); transform: scale(1.1); box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .navbar h2 { font-size: 1.5rem; } .video-container { padding: 15px; max-width: 100%; } .button { padding: 12px 20px; } .account-menu button { font-size: 0.9rem; } }
     </style>
 </head>
-
 <body>
     <div class="navbar">
         <img src="{{ url_for('static', filename='img/logo.png') }}" alt="ZoomTots Logo">
-
         <h2>ZoomTots</h2>
     </div>
 
     <div class="account-menu">
         <button class="button" id="accountBtn">My Account</button>
         <div class="menu" id="accountMenu">
-            <p><a href="dashboard.html">Dashboard</a></p>
-            <p><a href="index.html">Logout</a></p>
+            <p><a href="{{ url_for('dashboard') }}">Dashboard</a></p>
+            <p><a href="{{ url_for('index') }}">Logout</a></p>
         </div>
     </div>
 
     <div class="video-container">
         <h1>Your Generated Video</h1>
-        <video controls>
+        <video controls id="generatedVideo">
             <source src="{{ url_for('static', filename='videos/generated_video.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        
 
         <div class="buttons">
-            <a href="assets/videos/generated_video.mp4" download class="button">Download Video</a>
-            <a href="{{ url_for('upload_page') }}" class="button">Upload Another Video</a>
-
+            <a href="{{ url_for('static', filename='videos/generated_video.mp4') }}" download class="button">Download Video</a>
+            <a href="{{ url_for('upload_selection') }}" class="button">Upload Another Video</a>
         </div>
     </div>
 
     <script>
         $(document).ready(function () {
-            // Demo video source - replace with your actual video path
-            $('#generatedVideo source').attr('src', 'static/videos/generated_video.mp4');
+            $('#accountBtn').click(function() {
+                $('#accountMenu').toggle();
+            });
             $('#generatedVideo')[0].load();
         });
     </script>
 </body>
-
 </html>
