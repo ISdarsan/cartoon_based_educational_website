@@ -1,0 +1,178 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background: var(--body-color);
+            font-family: var(--body-font);
+        }
+        .navbar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .navbar img {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+        .navbar h2 {
+            color: var(--title-color);
+            font-size: 1.5rem;
+        }
+        .dashboard {
+            text-align: center;
+            padding: 50px;
+            color: var(--title-color);
+        }
+        .dashboard img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        .dashboard p {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+        .buttons {
+            margin-top: 30px;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 25px;
+            background: var(--first-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .button:hover {
+            background: var(--first-color-alt);
+            transform: scale(1.1);
+        }
+
+        .account-menu {
+    position: absolute;
+    top: 20px;
+    right: 20px; /* Move it to the right side */
+    display: inline-block;
+}
+
+
+.menu {
+    display: none;
+            background: var(--container-color);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.account-menu:hover .menu {
+    display: block;
+}
+
+.menu p {
+    padding: 8px 16px;
+    margin: 0;
+}
+
+.menu a {
+    text-decoration: none;
+    color: black;
+}
+
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo">
+        <h2>ZoomTots</h2>
+    </div>
+    
+    <div class="account-menu">
+        <button class="button" id="accountBtn">My Account</button>
+        <div class="menu" id="accountMenu">
+            <p><a href="{{ url_for('dashboard') }}">Dashboard</a></p>
+            <p><a href="{{ url_for('logout') }}">Logout</a></p>
+        </div>
+    </div>
+    <div class="navbar">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo">
+        <h2>ZoomTots</h2>
+    </div>
+    
+    <div class="dashboard">
+        <h1>Welcome to ZoomTots!</h1>
+        <img src="{{ url_for('static', filename='img/chottu.png') }}" alt="Chottu">
+        <p>Engaging learning experience with interactive cartoon characters!</p>
+        
+        <div class="buttons">
+            <a href="{{ url_for('upload_selection') }}" class="button">Upload PPT</a>
+
+        </div>
+    </div>
+    
+    <div class="account-menu">
+        <button class="button" id="accountBtn">My Account</button>
+        <div class="menu" id="accountMenu">
+            <p><a href="#">Profile</a></p>
+            <p><a href="#">Logout</a></p>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            $('#accountBtn').click(function() {
+                $('#accountMenu').toggle();
+            });
+        });
+    </script>
+    <script>
+    $(document).ready(function() {
+        $('#showSignUp').click(function() {
+            $('#loginBox').addClass('hidden');
+            $('#signUpBox').removeClass('hidden');
+        });
+        $('#showLogin').click(function() {
+            $('#signUpBox').addClass('hidden');
+            $('#loginBox').removeClass('hidden');
+        });
+        
+        // Add this new code:
+        $('button').click(function() {
+            // For demo purposes, we'll just go to dashboard
+            // In real app, you'd verify login first
+            window.location.href = 'dashboard.html';
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#accountBtn').click(function() {
+            $('#accountMenu').toggle();
+        });
+    });
+</script>
+</body>
+</html>

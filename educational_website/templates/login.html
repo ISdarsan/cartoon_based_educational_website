@@ -1,0 +1,138 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: var(--body-color);
+            font-family: var(--body-font);
+        }
+
+        .container {
+            width: 350px;
+            background: var(--container-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: var(--first-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--first-color-alt);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="loginBox">
+        <h2>Login</h2>
+        <input type="text" id="loginUsername" placeholder="Username">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button id="loginBtn">Login</button>
+        <p>Don't have an account? <a href="#" id="showSignUp">Sign Up</a></p>
+    </div>
+
+    <div class="container hidden" id="signUpBox">
+        <h2>Sign Up</h2>
+        <input type="text" id="signUpUsername" placeholder="Username">
+        <input type="email" id="signUpEmail" placeholder="Email">
+        <input type="password" id="signUpPassword" placeholder="Password">
+        <button id="signUpBtn">Sign Up</button>
+        <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Show SignUp Box
+            $('#showSignUp').click(function () {
+                $('#loginBox').addClass('hidden');
+                $('#signUpBox').removeClass('hidden');
+            });
+
+            // Show Login Box
+            $('#showLogin').click(function () {
+                $('#signUpBox').addClass('hidden');
+                $('#loginBox').removeClass('hidden');
+            });
+
+            // Handle SignUp
+            $('#signUpBtn').click(function () {
+                var username = $('#signUpUsername').val();
+                var email = $('#signUpEmail').val();
+                var password = $('#signUpPassword').val();
+
+                // Validate user input
+                if (username && email && password) {
+                    // Store user details in localStorage
+                    var userData = {
+                        username: username,
+                        email: email,
+                        password: password
+                    };
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    alert('User signed up successfully!');
+                    // Redirect to dashboard
+                    window.location.href = dashboardUrl;
+                } else {
+                    alert('Please fill all fields!');
+                }
+            });
+
+            // Handle Login
+            $('#loginBtn').click(function () {
+                var username = $('#loginUsername').val();
+                var password = $('#loginPassword').val();
+
+                // Retrieve user data from localStorage
+                var storedUserData = JSON.parse(localStorage.getItem('user'));
+
+                // Validate user login
+                if (storedUserData && storedUserData.username === username && storedUserData.password === password) {
+                    alert('Login successful!');
+                    // Redirect to dashboard
+                    window.location.href = dashboardUrl;
+                } else {
+                    alert('Invalid credentials. Please try again.');
+                }
+            });
+        });
+        var dashboardUrl = "{{ url_for('dashboard') }}";
+    </script>
+   
+</body>
+
+</html>
