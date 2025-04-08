@@ -19,17 +19,33 @@
         .menu p { padding: 8px 16px; margin: 0; }
         .menu a { text-decoration: none; color: black; }
         .container { text-align: center; padding: 50px; color: var(--title-color); }
-        .upload-box { border: 2px dashed var(--first-color); padding: 20px; border-radius: 10px; cursor: pointer; margin-bottom: 30px; transition: background 0.3s; font-size: 1.2rem; font-weight: bold; color: var(--text-color); background: rgba(255, 255, 255, 0.1); }
+        .upload-section { max-width: 500px; margin: 0 auto 30px; }
+        .upload-box { 
+            display: block; 
+            border: 2px dashed var(--first-color); 
+            padding: 20px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            color: var(--text-color); 
+            background: rgba(255, 255, 255, 0.1); 
+            text-align: center; 
+        }
         .upload-box:hover { background: rgba(255, 255, 255, 0.2); }
+        .upload-box input { display: none; }
+        .file-name { margin-top: 10px; font-size: 1rem; color: var(--text-color); }
         .characters { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
         .character-card { width: 180px; background: var(--container-color); padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; position: relative; }
         .character-card:hover { transform: scale(1.05); box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); }
         .character-card img { width: 100%; border-radius: 10px; }
         .character-card p { margin-top: 10px; font-size: 1rem; font-weight: bold; color: var(--title-color); }
-        .selected { border: 3px solid var(--first-color); box-shadow: 0 0 15px var(--first-color); position: relative; }
+        .selected { border: 3px solid var(--first-color); box-shadow: 0 0 15px var(--first-color); }
         .selected::after { content: '\2713'; font-size: 2rem; color: var(--first-color); position: absolute; top: 5px; right: 10px; font-weight: bold; }
         .button { display: inline-block; padding: 15px 25px; background: var(--first-color); color: white; text-decoration: none; border-radius: 5px; transition: background 0.3s, transform 0.2s; margin-top: 20px; pointer-events: auto; opacity: 1; }
         .button:hover { background: var(--first-color-alt); transform: scale(1.1); }
+        .button:disabled { opacity: 0.5; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -47,32 +63,87 @@
     </div>
     
     <div class="container">
-        <h1>Test Video Generation</h1>
-        <p>Click below to generate a video using a static PPT file with Chotta Bheem.</p>
+        <h1>Upload Your PPT & Choose a Character</h1>
+        <p>Upload your PowerPoint presentation (.pptx) and select an animated character to narrate it!</p>
         
-        <h2>Your Animated Instructor</h2>
-        <p>Chotta Bheem will deliver the presentation in a fun way!</p>
-        <div class="characters">
-            <div class="character-card selected" data-char="chotta">
-                <img src="{{ url_for('static', filename='img/chotta.png') }}" alt="Chotta">
-                <p>Chotta Bheem</p>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="upload-section">
+                <label for="pptFile" class="upload-box" id="uploadBox">
+                    Click here to upload your PPT file
+                    <input type="file" name="file" id="pptFile" accept=".pptx">
+                </label>
+                <p class="file-name" id="fileName">No file selected</p>
             </div>
-        </div>
-        
-        <button class="button" id="generateVideoBtn">Generate Video</button>
+
+            <h2>Select Your Animated Instructor</h2>
+            <div class="characters">
+                <div class="character-card selected" data-char="chotta">
+                    <img src="{{ url_for('static', filename='img/chotta.png') }}" alt="Chotta Bheem">
+                    <p>Chotta Bheem</p>
+                </div>
+                <div class="character-card" data-char="Doremon">
+                    <img src="{{ url_for('static', filename='img/doremon.png') }}" alt="Doremon">
+                    <p>Doremon</p>
+                </div>
+                <div class="character-card" data-char="dora">
+                    <img src="{{ url_for('static', filename='img/dora.png') }}" alt="Dora">
+                    <p>Dora</p>
+                </div>
+                <div class="character-card" data-char="Mr Bean">
+                    <img src="{{ url_for('static', filename='img/Mrbean.png') }}" alt="Mr Bean">
+                    <p>Mr Bean</p>
+                </div>
+            </div>
+            
+            <button type="submit" class="button" id="generateVideoBtn" disabled>Generate Video</button>
+        </form>
     </div>
     
     <script>
         $(document).ready(function() {
-            $('#accountBtn').click(function() {
+            // Account menu toggle
+            $('#accountBtn').click(function(e) {
+                e.stopPropagation();
                 $('#accountMenu').toggle();
             });
-            
-            $('#generateVideoBtn').click(function(e) {
+
+            // Close menu when clicking outside
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.account-menu').length) {
+                    $('#accountMenu').hide();
+                }
+            });
+
+            // File input change handler
+            $('#pptFile').change(function(e) {
+                e.stopPropagation();
+                const fileName = this.files[0] ? this.files[0].name : 'No file selected';
+                $('#fileName').text(fileName);
+                $('#generateVideoBtn').prop('disabled', !this.files.length);
+            });
+
+            // Character selection
+            $('.character-card').click(function(e) {
                 e.preventDefault();
+                $('.character-card').removeClass('selected');
+                $(this).addClass('selected');
+            });
+
+            // Form submission
+            $('#uploadForm').submit(function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const selectedChar = $('.character-card.selected').data('char');
+                formData.append('character', selectedChar);
+
+                $('#generateVideoBtn').prop('disabled', true).text('Generating...');
+
                 $.ajax({
                     url: '/upload',
-                    type: 'GET',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function(response) {
                         console.log('Success:', response);
                         window.location.href = "{{ url_for('video') }}";
@@ -80,6 +151,7 @@
                     error: function(xhr, status, error) {
                         console.error('Error:', xhr.responseText, status, error);
                         alert('Error generating video: ' + xhr.responseText);
+                        $('#generateVideoBtn').prop('disabled', false).text('Generate Video');
                     }
                 });
             });
